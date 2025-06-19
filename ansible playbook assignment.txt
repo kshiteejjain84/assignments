@@ -1,0 +1,77 @@
+---
+- hosts: devlinux[0]
+  user: kshiteej
+  become: yes
+  connection: ssh
+  gather_facts: yes
+
+
+
+
+  tasks:
+    - name: install java17
+      yum:
+        name: java-17-amazon-corretto.x86_64
+        state: present
+
+
+    - name: install tomcat
+      yum:
+        name: tomcat
+        state: present
+      notify:
+        - copy
+        - set permission and ownership to directory
+        - service tomcat start
+
+  handlers:
+    - name: copy
+      action: copy src=sample.war dest=/var/lib/tomcat/webapps
+
+
+    - name: set permission and ownership to directory
+      file:
+        path: /var/lib/tomcat
+        owner: kshiteej
+        group: kshiteej
+        mode: '0777'
+        recurse: yes
+
+
+    - name: service tomcat start
+      service:
+        name: tomcat
+        state: started
+
+
+- hosts: devlinux[1]
+  user: kshiteej
+  become: yes
+  connection: ssh
+  gather_facts: yes
+
+
+  tasks:
+    - name: install docker
+      yum:
+        name: docker
+        state: present
+
+    - name: service docker start
+      service:
+        name: docker
+        state: started
+
+    - name: copy sample.war to remote host
+      copy:
+        src: sample.war
+        dest: /home/kshiteej
+
+    - name: run docker container tomcat
+      command: docker run -dp 8080:8080 --name tomcat7 tomcat:7
+      notify:
+        - copy sample.war from remote host to container on remote host
+
+  handlers:
+    - name: copy sample.war from remote host to container on remote host
+      command: docker cp /home/kshiteej/sample.war tomcat7:/usr/local/tomcat/webapps
