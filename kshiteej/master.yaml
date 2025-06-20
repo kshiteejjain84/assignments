@@ -1,0 +1,22 @@
+---
+- hosts: devlinux[0]
+  user: kshiteej
+  become: yes
+  connection: ssh
+  gather_facts: yes
+
+
+
+  roles:
+    - host1
+
+
+- hosts: devlinux[1]
+  user: kshiteej
+  become: yes
+  connection: ssh
+  gather_facts: yes
+
+
+  roles:
+    - host2

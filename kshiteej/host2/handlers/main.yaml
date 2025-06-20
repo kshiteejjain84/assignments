@@ -1,0 +1,13 @@
+- name: service docker start
+  service:
+    name: docker
+    state: started
+
+- name: copy sample.war from ws to h2
+  action: copy src=sample.war dest=/home/kshiteej
+
+- name: container tomcat7 run
+  command: docker run -dp 8080:8080 --name tomcat7 tomcat:7
+
+- name: copy sample.war to container
+  command: docker cp /home/kshiteej/sample.war tomcat7:/usr/local/tomcat/webapps

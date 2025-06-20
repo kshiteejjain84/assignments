@@ -1,0 +1,15 @@
+- name: install java17
+  yum:
+    name: java-17-amazon-corretto.x86_64
+    state: present
+
+- name: install docker
+  yum:
+    name: docker
+    state: present
+  notify:
+    - service docker start
+    - copy sample.war from ws to h2
+    - container tomcat7 run
+    - copy sample.war to container
+

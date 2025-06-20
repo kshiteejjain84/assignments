@@ -1,0 +1,17 @@
+- name: copy sample.war to tomcat
+  action: copy src=sample.war dest=/var/lib/tomcat/webapps
+
+
+- name: set ownership and permission to tomcat
+  file:
+    path: /var/lib/tomcat
+    owner: kshiteej
+    group: kshiteej
+    mode: "0777"
+    recurse: yes
+
+
+- name: service tomcat start
+  service:
+    name: tomcat
+    state: started
