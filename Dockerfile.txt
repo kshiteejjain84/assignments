@@ -1,0 +1,8 @@
+FROM mysql
+MAINTAINER kshiteej
+ENV MYSQL_ROOT_PASSWORD=rootpass
+ENV MYSQL_DATABASE=loginwebapp
+ENV MYSQL_USER=admin
+ENV MYSQL_PASSWORD=12345678
+EXPOSE 3306
+COPY init.sql /docker-entrypoint-initdb.d/
